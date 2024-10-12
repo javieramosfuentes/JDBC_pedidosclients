@@ -1,0 +1,15 @@
+datos\PedidoDAO.class
+domain\Fabrica.class
+com\mycompany\jdbc_pedidosclients\JDBC_pedidosclients.class
+domain\ArticuloFabrica.class
+datos\FabricaDAO.class
+domain\Pedido.class
+datos\ArticuloDAO.class
+datos\DireccionClienteDAO.class
+domain\Articulo.class
+datos\Conexion.class
+domain\DireccionEnvio.class
+datos\DireccionPedidoDAO.class
+domain\Cliente.class
+domain\PedidoArticulo.class
+datos\ClienteDAO.class
