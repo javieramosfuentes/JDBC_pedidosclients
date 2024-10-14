@@ -5,46 +5,43 @@
 package datos;
 
 import static datos.Conexion.getConnection;
-import domain.DireccionEnvio;
-import domain.Pedido;
+import domain.ArticuloFabrica;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 
 /**
  *
  * @author javramfue
  */
-public class PedidoDAO {
-    private static final String SQL_SELECT ="SELECT * FROM pedido";    
-    private static final String SQL_INSERT ="INSERT INTO pedido (idDireccion,fecha,idCliente) VALUES (?,?,?)";
-    private static final String SQL_UPDATE ="UPDATE pedido SET idDireccion = ?, fecha = ?,idCliente = ? WHERE idPedido = ?; ";
-    private static final String SQL_GET ="SELECT * FROM pedido WHERE idDireccion = ? && fecha = ? && idCliente = ?";
-    private static final String SQL_DELETE ="DELETE FROM pedido WHERE idPedido = ?";
+public class ArticuloFabricaDAO {
+    private static final String SQL_SELECT ="SELECT * FROM articulofabrica";    
+    private static final String SQL_INSERT ="INSERT INTO articulofabrica (idArticulo,idFabrica,precio,existencias) VALUES (?,?,?,?)";
+    private static final String SQL_UPDATE ="UPDATE articulofabrica SET precio = ?,existencias = ? WHERE idArticulo = ? && idFabrica = ?; ";
+    private static final String SQL_DELETE ="DELETE FROM articulofabrica WHERE idArticulo = ? && idFabrica = ?";
 
     
-    public List<Pedido> seleccionar() throws SQLException{
+    public List<ArticuloFabrica> seleccionar() throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        Pedido pedido = null;
-        List<Pedido> pedidos = new ArrayList<>();
+        ArticuloFabrica articulo = null;
+        List<ArticuloFabrica> articulosFabrica = new ArrayList<>();
         
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(SQL_SELECT);
             rs = stmt.executeQuery();
             while(rs.next()){
-                int idPedido = rs.getInt("idPedido");
-                Date fecha = rs.getDate("fecha");
-                int direccionEnvio = rs.getInt("idDireccion");
-                int cliente = rs.getInt("idCliente");
-                pedido = new Pedido(idPedido, fecha,direccionEnvio,cliente);
-                pedidos.add(pedido);
+                int idArticulo = rs.getInt("idArticulo");
+                int idFabrica = rs.getInt("idFabrica");
+                int existencias = rs.getInt("existencias");
+                int precio = rs.getInt("precio");
+                articulo = new ArticuloFabrica(precio, existencias,idArticulo,idFabrica);
+                articulosFabrica.add(articulo);
             }
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
@@ -55,19 +52,21 @@ public class PedidoDAO {
             Conexion.close(rs);
             Conexion.close(stmt);
         }
-        return pedidos;
+        return articulosFabrica;
     }
     
-    public int insertar(Pedido pedido) {
+    public int insertar(ArticuloFabrica articulolFabrica) {
         Connection conn = null;
         PreparedStatement stmt = null;
         int registros = 0;
         try {
             conn = Conexion.getConnection();
             stmt = conn.prepareStatement(SQL_INSERT);
-            stmt.setInt(1,pedido.getDireccionEnvio());
-            stmt.setDate(2, (java.sql.Date) pedido.getFecha());
-            stmt.setInt(3,pedido.getIdCliente());
+            stmt.setInt(1,articulolFabrica.getIdArticulo());
+            stmt.setInt(2,articulolFabrica.getIdFabrica());
+            stmt.setInt(3,articulolFabrica.getPrecio());
+            stmt.setInt(4,articulolFabrica.getExistencias());
+            
             registros = stmt.executeUpdate();
             
         } catch (SQLException ex) {
@@ -88,18 +87,18 @@ public class PedidoDAO {
         return registros;
     }
     
-    public boolean actualizar(Pedido pedido) {
+    
+    public boolean actualizar(ArticuloFabrica articuloFabrica) {
         Connection conn = null;
         PreparedStatement stmt = null;
         int registros = 0;
         try {
             conn = Conexion.getConnection();
             stmt = conn.prepareStatement(SQL_UPDATE);
-            java.sql.Date fechaSql = new java.sql.Date(pedido.getFecha().getTime());
-            stmt.setInt(1,pedido.getDireccionEnvio());
-            stmt.setDate(2,fechaSql);
-            stmt.setInt(3,pedido.getIdCliente());
-            stmt.setInt(4,pedido.getId_pedido());
+            stmt.setInt(1,articuloFabrica.getPrecio());
+            stmt.setInt(2,articuloFabrica.getExistencias());
+            stmt.setInt(3,articuloFabrica.getIdArticulo());
+            stmt.setInt(4,articuloFabrica.getIdFabrica());
             registros = stmt.executeUpdate();
             return true;
             
@@ -119,47 +118,6 @@ public class PedidoDAO {
             }
         }
         return false;
-    }
-    
-    public Pedido obtener(Pedido pedido) throws SQLException{
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        Pedido pedidoNuevo = new Pedido();
-        ResultSet rs = null;
-        int registros = 0;
-        try {
-            conn = Conexion.getConnection();
-            java.sql.Date fechaSql = new java.sql.Date(pedido.getFecha().getTime());
-            stmt = conn.prepareStatement(SQL_GET);
-            stmt.setInt(1,pedido.getDireccionEnvio());
-            stmt.setDate(2,fechaSql);
-            stmt.setInt(3,pedido.getIdCliente());
-            rs = stmt.executeQuery();
-            while(rs.next()){
-                int id_pedido = rs.getInt("idPedido");
-                Date fecha = rs.getDate("fecha");
-                int dirEnvio = rs.getInt("idDireccion");
-                int cliente = rs.getInt("idCliente");
-                Pedido ped = new Pedido(id_pedido,fecha,dirEnvio,cliente);
-                pedidoNuevo = ped;
-            }
-            
-        } catch (SQLException ex) {
-            ex.printStackTrace(System.out);
-        }
-        
-        finally{
-            try {
-                Conexion.close(stmt);
-            } catch (SQLException ex) {
-            }
-            try {
-                Conexion.close(conn);
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
-        }
-        return pedidoNuevo;
     }
         
     public boolean eliminar(int id) {
@@ -192,5 +150,4 @@ public class PedidoDAO {
         }
         return false;
     }
-
 }

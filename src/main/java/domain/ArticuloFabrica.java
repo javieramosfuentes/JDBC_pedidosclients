@@ -14,7 +14,7 @@ public class ArticuloFabrica {
     private int idFabrica;
     private int precio;
 
-    public ArticuloFabrica(int existencias, int idArticulo, int idFabrica,int precio) {
+    public ArticuloFabrica(int precio,int existencias, int idArticulo, int idFabrica) {
         this.existencias = existencias;
         this.idArticulo = idArticulo;
         this.idFabrica = idFabrica;

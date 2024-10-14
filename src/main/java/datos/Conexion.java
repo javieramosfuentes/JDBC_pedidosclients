@@ -21,7 +21,7 @@ public class Conexion {
     private static final String JDBC_PASSWORD ="serpis";
 
     public static Connection getConnection() throws SQLException{
-      return DriverManager.getConnection  (JDBC_URL,JDBC_USER,JDBC_USER);
+      return DriverManager.getConnection  (JDBC_URL,JDBC_USER,JDBC_PASSWORD);
    }
     
     public static void close(ResultSet rs) throws SQLException{

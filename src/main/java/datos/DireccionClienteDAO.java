@@ -24,7 +24,7 @@ public class DireccionClienteDAO {
     private static final String SQL_UPDATE ="UPDATE direccioncliente SET ciudad = ?, calle = ?, comuna = ?, numero = ? WHERE idDireccion  = ?; ";
     private static final String SQL_DELETE ="DELETE FROM direccioncliente WHERE idDireccion  = ?";
     private static final String SQL_GET ="SELECT * FROM direccioncliente WHERE ciudad = ? && calle = ? && comuna = ? && numero = ?";
-    private static final String SQL_GET_BY_ID ="SELECT * FROM direccionpedido WHERE idDireccion = ?";
+    private static final String SQL_GET_BY_ID ="SELECT * FROM direccioncliente WHERE idDireccion = ?";
 
     
     public List<DireccionEnvio> seleccionar() throws SQLException{

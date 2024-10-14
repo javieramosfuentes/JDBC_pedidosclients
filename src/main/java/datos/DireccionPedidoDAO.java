@@ -38,7 +38,7 @@ public class DireccionPedidoDAO {
             stmt = conn.prepareStatement(SQL_SELECT);
             rs = stmt.executeQuery();
             while(rs.next()){
-                int idDireccion = rs.getInt("idDireccion ");
+                int idDireccion = rs.getInt("idDireccion");
                 String numero = rs.getString("numero");
                 String calle = rs.getString("calle");
                 String ciudad = rs.getString("ciudad");

@@ -3,6 +3,7 @@ package datos;
 import static datos.Conexion.getConnection;
 import domain.Articulo;
 import domain.Cliente;
+import domain.DireccionEnvio;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,6 +26,8 @@ public class ArticuloDAO {
     private static final String SQL_INSERT ="INSERT INTO articulo (descripcion) VALUES (?)";
     private static final String SQL_UPDATE ="UPDATE articulo SET descripcion = ? WHERE idArticulo = ?; ";
     private static final String SQL_DELETE ="DELETE FROM articulo WHERE idArticulo = ?";
+    private static final String SQL_GET ="SELECT * FROM articulo WHERE idArticulo = ?";
+    private static final String SQL_GET_BY_DESC ="SELECT * FROM articulo WHERE descripcion = ?";
 
     
     public List<Articulo> seleccionar() throws SQLException{
@@ -113,6 +116,78 @@ public class ArticuloDAO {
             }
         }
         return false;
+    }
+    
+    public Articulo obtener(Articulo articulo) throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        Articulo nuevoArticulo = new Articulo();
+        ResultSet rs = null;
+        int registros = 0;
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.prepareStatement(SQL_GET);
+            stmt.setInt(1,articulo.getId_articulo());
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                int id_art = rs.getInt("idArticulo");
+                String descripcion = rs.getString("descripcion");
+                Articulo art = new Articulo(id_art,descripcion);
+                nuevoArticulo = art;
+            }
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+        
+        finally{
+            try {
+                Conexion.close(stmt);
+            } catch (SQLException ex) {
+            }
+            try {
+                Conexion.close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return nuevoArticulo;
+    }
+    
+    public Articulo obtenerPorDesc(String desc) throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        Articulo articulo = new Articulo();
+        ResultSet rs = null;
+        int registros = 0;
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.prepareStatement(SQL_GET_BY_DESC);
+            stmt.setString(1,desc);
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                int id_dir = rs.getInt("idArticulo");
+                String descripcion = rs.getString("descripcion");
+                Articulo art = new Articulo(id_dir,descripcion);
+                articulo = art;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+
+        finally{
+            try {
+                Conexion.close(stmt);
+            } catch (SQLException ex) {
+            }
+            try {
+                Conexion.close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return articulo;
     }
         
     public boolean eliminar(int id) {
