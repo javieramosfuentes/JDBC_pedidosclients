@@ -18,10 +18,10 @@ import java.util.List;
  * @author javramfue
  */
 public class PedidoArticuloDAO {
-    private static final String SQL_SELECT ="SELECT * FROM articulopedido";    
-    private static final String SQL_INSERT ="INSERT INTO articulopedido (cantidad,idPedido,idArticulo) VALUES (?,?,?)";
-    private static final String SQL_UPDATE ="UPDATE articulopedido SET cantidad = ? WHERE idPedido = ? && idArticulo = ? ; ";
-    private static final String SQL_DELETE ="DELETE FROM articulopedido WHERE idPedido = ? && idArticulo = ?";
+    private static final String SQL_SELECT ="SELECT * FROM articulospedido";    
+    private static final String SQL_INSERT ="INSERT INTO articulospedido (cantidad,idPedido,idArticulo) VALUES (?,?,?)";
+    private static final String SQL_UPDATE ="UPDATE articulospedido SET cantidad = ? WHERE idPedido = ? && idArticulo = ? ; ";
+    private static final String SQL_DELETE ="DELETE FROM articulospedido WHERE idPedido = ? && idArticulo = ?";
 
     
     public List<PedidoArticulo> seleccionar() throws SQLException{

@@ -171,7 +171,7 @@ public class JDBC_pedidosclients {
                             System.out.println("-- Cliente añadido correctamente --");
                             break;
                         case "3":
-
+                            
                             break;
                         case "4":
 
@@ -243,22 +243,25 @@ public class JDBC_pedidosclients {
                                 break;
                             }
                             System.out.println("-- Introduce los artículos de tu pedido --");
-                            for(String opcion = "s";opcion == "s";){
+                            //Bucle que se repetirá si el usuario quiere seguir añadiendo articulos
+                            for(boolean masArticulos = true;masArticulos;){
                                 System.out.print("Desea añadir un artículo?(s/n):");
-                                opcion = sc.nextLine();
-                                if(opcion == "n")
+                                String opcion = sc.nextLine();
+                                if("no".equals(opcion)){
                                     break;
-                                System.out.print("Añade su descripción:");
-                                String descripcion = sc.nextLine();
-                                ArticuloDAO articuloDAO = new ArticuloDAO();
-                                Articulo articulo = new Articulo(descripcion);
-                                articuloDAO.insertar(articulo);
-                                
-                                System.out.print("Cantidad:");
-                                String cantidad = sc.nextLine();
-                                PedidoArticulo pedidoArt = new PedidoArticulo(Integer.parseInt(cantidad),pedidoDAO.obtener(pedido).getId_pedido(),articuloDAO.obtenerPorDesc(descripcion).getId_articulo());
-                                PedidoArticuloDAO pedDAO = new PedidoArticuloDAO();
-                                pedDAO.insertar(pedidoArt);
+                                }else if("si".equals(opcion)){
+                                    System.out.print("Añade su descripción:");
+                                    String descripcion = sc.nextLine();
+                                    ArticuloDAO articuloDAO = new ArticuloDAO();
+                                    Articulo articulo = new Articulo(descripcion);
+                                    articuloDAO.insertar(articulo);
+
+                                    System.out.print("Cantidad:");
+                                    String cantidad = sc.nextLine();
+                                    PedidoArticulo pedidoArt = new PedidoArticulo(Integer.parseInt(cantidad),pedidoDAO.obtener(pedido).getId_pedido(),articuloDAO.obtenerPorDesc(descripcion).getId_articulo());
+                                    PedidoArticuloDAO pedDAO = new PedidoArticuloDAO();
+                                    pedDAO.insertar(pedidoArt);
+                                }
                             }
                             System.out.println("-- Pedido añadido correctamente --");
                             break;
@@ -272,9 +275,9 @@ public class JDBC_pedidosclients {
                     break;
                         //Seleccionar La direccion por su id
                 case "Articulos":
+                     ArticuloDAO articuloDAO = new ArticuloDAO();
                     switch (accion) {
                         case "1":
-                            ArticuloDAO articuloDAO = new ArticuloDAO();
                             List<Articulo> articulos = articuloDAO.seleccionar();
                             articulos.forEach(art -> {
                                 //Seleccionar La direccion por su id
@@ -283,7 +286,10 @@ public class JDBC_pedidosclients {
                             });
                         break;
                         case "2":
-                            
+                            System.out.print("Añade su descripción:");
+                            String descripcion = sc.nextLine();
+                            Articulo articulo = new Articulo(descripcion);
+                            articuloDAO.insertar(articulo);
                         break;
                         case "3":
                             
@@ -294,9 +300,9 @@ public class JDBC_pedidosclients {
                     }
                     break;
                 case "Fabricas":
+                    FabricaDAO fabricaDAO = new FabricaDAO();
                     switch (accion) {
                         case "1":
-                            FabricaDAO fabricaDAO = new FabricaDAO();
                             List<Fabrica> fabricas = fabricaDAO.seleccionar();
                             fabricas.forEach(fab -> {
                                 //Seleccionar La direccion por su id
@@ -305,14 +311,13 @@ public class JDBC_pedidosclients {
                             });
                         break;
                         case "2":
-                            FabricaDAO fabDAO = new FabricaDAO();
                             System.out.println("-- Añade una Fabrica -- ");
                             System.out.print("Teléfono: ");
                             String telefono = sc.nextLine();
                             System.out.print("Articulos Provistos: ");
                             String artProv = sc.nextLine();
                             Fabrica fabrica = new Fabrica(telefono,Integer.parseInt(artProv));
-                            fabDAO.insertar(fabrica);
+                            fabricaDAO.insertar(fabrica);
                         break;
                         case "3":
                             
@@ -367,8 +372,6 @@ public class JDBC_pedidosclients {
                             
                             System.out.println(" ");
                             System.out.println("-- Dirección añadida correctamente -- ");
-                            
-                                
                         break;
                         case "3":
                             

@@ -44,7 +44,7 @@ public class ArticuloDAO {
             while(rs.next()){
                 int idArticulo = rs.getInt("idArticulo");
                 String descripcion = rs.getString("descripcion");
-                articulo = new Articulo("Alfombrilla para el baño"/*,articulos*/);
+                articulo = new Articulo(idArticulo,descripcion);
                 articulos.add(articulo);
             }
         } catch (SQLException ex) {
