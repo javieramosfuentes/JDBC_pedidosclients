@@ -1,0 +1,9 @@
+com/mycompany/jdbc_pedidosclients/JDBC_pedidosclients.class
+domain/Pedido.class
+domain/DireccionEnvio.class
+datos/Conexion.class
+datos/ClienteDAO.class
+domain/PedidoArticulo.class
+domain/Cliente.class
+domain/Articulo.class
+domain/Fabrica.class
