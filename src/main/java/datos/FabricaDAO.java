@@ -158,7 +158,6 @@ public class FabricaDAO {
             conn = Conexion.getConnection();
             stmt = conn.prepareStatement(SQL_DELETE_WITHOUT_PEDIDOS);
             registros = stmt.executeUpdate();
-            System.out.println("-- Eliminado correctamente --");
             return true;
             
         } catch (SQLException ex) {

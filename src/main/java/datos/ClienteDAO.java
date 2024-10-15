@@ -86,7 +86,7 @@ public class ClienteDAO {
         return registros;
     }
 
-    public boolean actualizar(Cliente cliente) {
+    public boolean actualizar(Cliente cliente,int id) {
         Connection conn = null;
         PreparedStatement stmt = null;
         int registros = 0;
@@ -97,7 +97,7 @@ public class ClienteDAO {
             stmt.setFloat(2,cliente.getLimiteCredito());
             stmt.setFloat(3,cliente.getDescuento());
             stmt.setInt(4,cliente.getDireccionEnvio());
-            stmt.setInt(5,cliente.getId_cliente());
+            stmt.setInt(5,id);
             registros = stmt.executeUpdate();
             return true;
             
@@ -128,7 +128,7 @@ public class ClienteDAO {
             stmt = conn.prepareStatement(SQL_DELETE);
             stmt.setInt(1,id);
             registros = stmt.executeUpdate();
-            System.out.println("Eliminado correctamente");
+            System.out.println("-- Eliminado correctamente --");
             return true;
             
         } catch (SQLException ex) {

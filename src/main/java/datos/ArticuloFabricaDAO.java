@@ -22,6 +22,7 @@ public class ArticuloFabricaDAO {
     private static final String SQL_INSERT ="INSERT INTO articulofabrica (idArticulo,idFabrica,precio,existencias) VALUES (?,?,?,?)";
     private static final String SQL_UPDATE ="UPDATE articulofabrica SET precio = ?,existencias = ? WHERE idArticulo = ? && idFabrica = ?; ";
     private static final String SQL_DELETE ="DELETE FROM articulofabrica WHERE idArticulo = ? && idFabrica = ?";
+    private static final String SQL_CALC_ART_X_ANYO ="SELECT SUM(ap.cantidad) AS total_articulos FROM articulopedido ap JOIN pedido p ON ap.idPedido = p.idPedido WHERE YEAR(p.fecha) = ?";
 
     
     public List<ArticuloFabrica> seleccionar() throws SQLException{
@@ -118,6 +119,37 @@ public class ArticuloFabricaDAO {
             }
         }
         return false;
+    }
+    
+    public int calcularCantidadArticulosPorAnyo(String anyo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        int registros = 0;
+        int totalArticulos = 0;
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.prepareStatement(SQL_CALC_ART_X_ANYO);
+            stmt.setString(1,anyo);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                totalArticulos = rs.getInt("total_articulos");
+            } 
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+        
+        finally{
+            try {
+                Conexion.close(stmt);
+            } catch (SQLException ex) {
+            }
+            try {
+                Conexion.close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return totalArticulos;
     }
         
     public boolean eliminar(int id) {
