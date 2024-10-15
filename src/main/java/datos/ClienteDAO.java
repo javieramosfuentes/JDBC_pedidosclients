@@ -20,6 +20,7 @@ public class ClienteDAO {
     private static final String SQL_UPDATE ="UPDATE cliente SET saldo = ?, limiteCredito = ?, descuento = ?, idDireccion = ? WHERE idCliente = ?; ";
     private static final String SQL_DELETE ="DELETE FROM cliente WHERE idCliente = ?";
     private static final String SQL_GET ="SELECT * FROM cliente WHERE idCliente = ?";
+    private static final String SQL_GET_PED_WITH_DISCOUNT ="SELECT p.*, c.descuento FROM pedido p JOIN cliente c ON p.idCliente = c.idCliente WHERE p.idCliente = ?";
 
     
     public List<Cliente> seleccionar() throws SQLException{
@@ -187,5 +188,32 @@ public class ClienteDAO {
             }
         }
         return registros;
+    }
+    
+    public List<Pedido> listarPedidosConDescuentos(int idCliente) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        List<Pedido> pedidos = new ArrayList<>();
+        float totalDescuentos = 0;
+        
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.prepareStatement(SQL_GET_PED_WITH_DISCOUNT);
+            stmt.setInt(1,idCliente);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int idPedido = rs.getInt("idPedido");
+                java.sql.Date fecha = new java.sql.Date(rs.getDate("fecha").getTime());
+                float descuento = rs.getFloat("descuento");
+                int idDireccion = rs.getInt("idDireccion");
+                totalDescuentos += descuento;
+                pedidos.add(new Pedido(idPedido, fecha, idDireccion,idCliente));
+            }
+            System.out.println("");
+            System.out.println("Total Descuentos: " + totalDescuentos);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return pedidos;
     }
 }

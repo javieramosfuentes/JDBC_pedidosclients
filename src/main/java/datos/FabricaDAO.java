@@ -1,3 +1,4 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -23,6 +24,9 @@ public class FabricaDAO {
     private static final String SQL_INSERT ="INSERT INTO fabrica (telefono,articulosProvistos) VALUES (?,?)";
     private static final String SQL_UPDATE ="UPDATE fabrica SET telefono = ?,articulosProvistos = ? WHERE idFabrica = ?; ";
     private static final String SQL_DELETE ="DELETE FROM fabrica WHERE idFabrica = ?";
+    
+    //Borra aquella fábrica la cual cualquier articulo suyo no esté en ningún pedido
+    private static final String SQL_DELETE_WITHOUT_PEDIDOS ="DELETE FROM fabrica WHERE idFabrica NOT IN (SELECT DISTINCT af.idFabrica FROM articulofabrica af JOIN articulopedido ap ON af.idArticulo = ap.idArticulo)";
 
     
     public List<Fabrica> seleccionar() throws SQLException{
@@ -145,5 +149,34 @@ public class FabricaDAO {
         }
         return false;
     }
-   
+    
+    public boolean borrarFabricasSinPedidos() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        int registros = 0;
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.prepareStatement(SQL_DELETE_WITHOUT_PEDIDOS);
+            registros = stmt.executeUpdate();
+            System.out.println("-- Eliminado correctamente --");
+            return true;
+            
+        } catch (SQLException ex) {
+            System.out.println("Se ha producido un error!");
+            ex.printStackTrace(System.out);
+        }
+        
+        finally{
+            try {
+                Conexion.close(stmt);
+            } catch (SQLException ex) {
+            }
+            try {
+                Conexion.close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return false;
+    }
 }

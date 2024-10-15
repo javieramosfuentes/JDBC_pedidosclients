@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -101,7 +103,7 @@ public class JDBC_pedidosclients {
      * Método que muestra i carga la lógica del menú
      * @param accion 
      */
-    public static void seleccionTabla(String accion) {
+    public static void seleccionTabla(String accion) throws SQLException{
         try {
             System.out.print("Que desea seleccionar? (Clientes/Pedidos/Articulos/Fabricas/Direcciones) ");
             String tabla = sc.nextLine();
@@ -115,7 +117,7 @@ public class JDBC_pedidosclients {
                             clientes.forEach(cli -> {
                                 //Seleccionar La direccion por su id
                                 System.out.println("");
-                                System.out.println("Id: " + cli.getId_cliente() + " - Saldo: " + cli.getSaldo() + " - Limite de Credito: " + cli.getLimiteCredito() + " - Descuento: " + cli.getDescuento());
+                                System.out.println("Id: " + cli.getId_cliente() + " - Saldo: " + cli.getSaldo() + " - Limite de Credito: " + cli.getLimiteCredito() + " - Descuento: " + cli.getDescuento()+ " - Direccion: " + cli.getDireccionEnvio());
                             });
                             break;
                         case "2":
@@ -131,27 +133,56 @@ public class JDBC_pedidosclients {
                             cliente.setDescuento(Float.parseFloat(descuento));
                             
                             DireccionEnvio direccionEnvio = new DireccionEnvio();
-                            System.out.println("-- DirecciÃ³n de EnvÃ­o -- ");
-                            System.out.print("Ciudad: ");
-                            String ciudad = sc.nextLine();
-                            direccionEnvio.setCiudad(ciudad);
-                            System.out.print("Calle: ");
-                            String calle = sc.nextLine();
-                            direccionEnvio.setCalle(calle);
-                            System.out.print("Comuna: ");
-                            String comuna = sc.nextLine();
-                            direccionEnvio.setComuna(comuna);
-                            System.out.print("NÃºmero: ");
-                            String numero = sc.nextLine();
-                            direccionEnvio.setNumero(numero);
-                            
-                            direccionCliDAO.insertar(direccionEnvio);
-                            cliente.setDireccionEnvio(direccionCliDAO.obtener(direccionEnvio).getId_direccion());
+                            System.out.println("Desea utilizar una direcciÃ³n de enviÃ³ existente? s/n ");
+                            String seleccionEnvio = sc.nextLine();
+                            switch(seleccionEnvio){
+                                case "s":
+                                    DireccionClienteDAO dirCliDAO = new DireccionClienteDAO();
+                                    List<DireccionEnvio> direccionesCliente = dirCliDAO.seleccionar();
+                                    System.out.println("-- Direcciones  --");
+                                    direccionesCliente.forEach(dir -> {
+                                        System.out.println("");
+                                        System.out.println("Id: " + dir.getId_direccion()+ " - Ciudad: " + dir.getCiudad()+ " - Calle: " + dir.getCalle() + " - Comuna: "+ dir.getComuna() + " - NÃºmero: "+dir.getNumero());
+                                    });
+                                    System.out.println(" ");
+                                    System.out.print("--> Seleccione tu direccion: ");
+                                    String direccion = sc.nextLine();
+                                    System.out.println("");
+                                    DireccionEnvio dirSeleccionada = direccionCliDAO.obtenerPorID(Integer.parseInt(direccion));
+                                    cliente.setDireccionEnvio(dirSeleccionada.getId_direccion());
+                                break;
+                                case "n":
+                                    System.out.print("Ciudad: ");
+                                    String ciudad = sc.nextLine();
+                                    System.out.print("Calle: ");
+                                    String calle = sc.nextLine();
+                                    System.out.print("Comuna: ");
+                                    String comuna = sc.nextLine();
+                                    System.out.print("NÃºmero: ");
+                                    String numero = sc.nextLine();
+                                    direccionEnvio = new DireccionEnvio(ciudad,calle,comuna,numero);
+                                    direccionCliDAO.insertar(direccionEnvio);
+                                    cliente.setDireccionEnvio(direccionCliDAO.obtener(direccionEnvio).getId_direccion());
+                                break;
+                                default:
+                                    System.out.println("!! OperaciÃ³n cancelada !!");
+                                    menu();
+                                break;
+                            }
                             clienteDAO.insertar(cliente);
                             System.out.println("-- Cliente añadido correctamente --");
                             break;
                         case "3":
-
+                            System.out.print("Introduce el cliente del cual quiere ver sus comandas:");
+                            String id = sc.nextLine();
+                            System.out.println("----------------------------");
+                            System.out.println("|     Cliente: "+id+"        |");
+                            System.out.println("----------------------------");
+                            clienteDAO.listarPedidosConDescuentos(Integer.parseInt(id)).forEach(ped -> {
+                                //Seleccionar La direccion por su id
+                                System.out.println("");
+                                System.out.println("Id: " + ped.getId_pedido()+ " - Fecha: " + ped.getFecha()+ " - Dirección de envío: " + ped.getDireccionEnvio());
+                            });
                             break;
                         case "4":
 
@@ -163,11 +194,25 @@ public class JDBC_pedidosclients {
                     PedidoDAO pedidoDAO = new PedidoDAO();
                     switch (accion) {
                         case "1":
+                            ArticuloDAO artDAO = new ArticuloDAO();
                             List<Pedido> pedidos = pedidoDAO.seleccionar();
+                            //
+                            //Falta Mejorar (Que muestre cada articulo de un pedido)
+                            //
                             pedidos.forEach(ped -> {
-                                //Seleccionar La direccion por su id
-                                System.out.println("");
-                                System.out.println("Id: " + ped.getId_pedido() + " - Fecha: " + ped.getFecha() + " - Direccion de Envio: " + ped.getDireccionEnvio() + " - Cliente: "+ped.getIdCliente());
+                                try {
+                                    List<Articulo> articulos = artDAO.obtenerDeUnPedido(ped);
+                                    //Seleccionar La direccion por su id
+                                    System.out.println("");
+                                    System.out.println("Id: " + ped.getId_pedido() + " - Fecha: " + ped.getFecha() + " - Direccion de Envio: " + ped.getDireccionEnvio() + " - Cliente: "+ped.getIdCliente());
+                                    System.out.println("--------------------- Artículos ---------------------");
+                                    articulos.forEach(art -> {
+                                        System.out.println("    Id: " + art.getId_articulo()+ " - Descripción: " + art.getDescripcion());
+                                        System.out.println("    --------------------------------------------");
+                                    });
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(JDBC_pedidosclients.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             });
                             break;
                         case "2":
@@ -223,22 +268,25 @@ public class JDBC_pedidosclients {
                                 break;
                             }
                             System.out.println("-- Introduce los artículos de tu pedido --");
-                            for(String opcion = "s";opcion == "s";){
-                                System.out.print("Desea añadir un artículo?(s/n):");
-                                opcion = sc.nextLine();
-                                if(opcion == "n")
+                            //Bucle que se repetirá si el usuario quiere seguir añadiendo articulos
+                            for(boolean masArticulos = true;masArticulos;){
+                                System.out.print("Desea añadir un artículo?(si/no):");
+                                String opcion = sc.nextLine();
+                                if("no".equals(opcion)){
                                     break;
-                                System.out.print("Añade su descripción:");
-                                String descripcion = sc.nextLine();
-                                ArticuloDAO articuloDAO = new ArticuloDAO();
-                                Articulo articulo = new Articulo(descripcion);
-                                articuloDAO.insertar(articulo);
-                                
-                                System.out.print("Cantidad:");
-                                String cantidad = sc.nextLine();
-                                PedidoArticulo pedidoArt = new PedidoArticulo(Integer.parseInt(cantidad),pedidoDAO.obtener(pedido).getId_pedido(),articuloDAO.obtenerPorDesc(descripcion).getId_articulo());
-                                PedidoArticuloDAO pedDAO = new PedidoArticuloDAO();
-                                pedDAO.insertar(pedidoArt);
+                                }else if("si".equals(opcion)){
+                                    System.out.print("Añade su descripción:");
+                                    String descripcion = sc.nextLine();
+                                    ArticuloDAO articuloDAO = new ArticuloDAO();
+                                    Articulo articulo = new Articulo(descripcion);
+                                    articuloDAO.insertar(articulo);
+
+                                    System.out.print("Cantidad:");
+                                    String cantidad = sc.nextLine();
+                                    PedidoArticulo pedidoArt = new PedidoArticulo(Integer.parseInt(cantidad),pedidoDAO.obtener(pedido).getId_pedido(),articuloDAO.obtenerPorDesc(descripcion).getId_articulo());
+                                    PedidoArticuloDAO pedDAO = new PedidoArticuloDAO();
+                                    pedDAO.insertar(pedidoArt);
+                                }
                             }
                             System.out.println("-- Pedido añadido correctamente --");
                             break;
@@ -252,9 +300,9 @@ public class JDBC_pedidosclients {
                     break;
                         //Seleccionar La direccion por su id
                 case "Articulos":
+                     ArticuloDAO articuloDAO = new ArticuloDAO();
                     switch (accion) {
                         case "1":
-                            ArticuloDAO articuloDAO = new ArticuloDAO();
                             List<Articulo> articulos = articuloDAO.seleccionar();
                             articulos.forEach(art -> {
                                 //Seleccionar La direccion por su id
@@ -263,7 +311,19 @@ public class JDBC_pedidosclients {
                             });
                         break;
                         case "2":
-                            
+                            System.out.print("Añade su descripción:");
+                            String descripcion = sc.nextLine();
+                            Articulo articulo = new Articulo(descripcion);
+                            articuloDAO.insertar(articulo);
+                            System.out.print("Precio:");
+                            String precio = sc.nextLine();
+                            System.out.print("Existencias del artículo:");
+                            String existencias = sc.nextLine();
+                            System.out.print("Id de la fábrica:");
+                            String fabrica = sc.nextLine();
+                            ArticuloFabrica articuloFabrica = new ArticuloFabrica(Integer.parseInt(precio),Integer.parseInt(existencias),articuloDAO.obtenerPorDesc(descripcion).getId_articulo(),Integer.parseInt(fabrica));
+                            ArticuloFabricaDAO artFabDAO = new ArticuloFabricaDAO();
+                            artFabDAO.insertar(articuloFabrica);
                         break;
                         case "3":
                             
@@ -274,9 +334,9 @@ public class JDBC_pedidosclients {
                     }
                     break;
                 case "Fabricas":
+                    FabricaDAO fabricaDAO = new FabricaDAO();
                     switch (accion) {
                         case "1":
-                            FabricaDAO fabricaDAO = new FabricaDAO();
                             List<Fabrica> fabricas = fabricaDAO.seleccionar();
                             fabricas.forEach(fab -> {
                                 //Seleccionar La direccion por su id
@@ -285,14 +345,13 @@ public class JDBC_pedidosclients {
                             });
                         break;
                         case "2":
-                            FabricaDAO fabDAO = new FabricaDAO();
                             System.out.println("-- Añade una Fabrica -- ");
                             System.out.print("Teléfono: ");
                             String telefono = sc.nextLine();
                             System.out.print("Articulos Provistos: ");
                             String artProv = sc.nextLine();
                             Fabrica fabrica = new Fabrica(telefono,Integer.parseInt(artProv));
-                            fabDAO.insertar(fabrica);
+                            fabricaDAO.insertar(fabrica);
                         break;
                         case "3":
                             
@@ -347,8 +406,6 @@ public class JDBC_pedidosclients {
                             
                             System.out.println(" ");
                             System.out.println("-- Dirección añadida correctamente -- ");
-                            
-                                
                         break;
                         case "3":
                             

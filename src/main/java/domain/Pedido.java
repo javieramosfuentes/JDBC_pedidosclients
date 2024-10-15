@@ -25,6 +25,15 @@ public class Pedido {
         this.idCliente = idCliente;
         //this.articulos = articulos;
     }
+    
+    public Pedido(int id_pedido, java.sql.Date fecha, int direccionEnvio, int idCliente/*, int articulos*/) {
+        this.idPedido = id_pedido;
+        this.fecha = fecha;
+        this.direccionEnvio = direccionEnvio;
+        this.idCliente = idCliente;
+        //this.articulos = articulos;
+    }
+
 
     public Pedido() {
     }

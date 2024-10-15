@@ -16,7 +16,7 @@ public class DireccionEnvio {
     private String comuna;
     private String ciudad;
 
-    public DireccionEnvio(String numero, String calle, String comuna, String ciudad) {
+    public DireccionEnvio(String ciudad, String calle, String comuna, String numero) {
         this.numero = numero;
         this.calle = calle;
         this.comuna = comuna;
@@ -27,7 +27,7 @@ public class DireccionEnvio {
         return idDireccion;
     }
 
-    public DireccionEnvio(int id_direccion, String numero, String calle, String comuna, String ciudad) {
+    public DireccionEnvio(int id_direccion, String ciudad, String calle, String comuna, String numero) {
         this.idDireccion = id_direccion;
         this.numero = numero;
         this.calle = calle;
@@ -38,7 +38,7 @@ public class DireccionEnvio {
     public DireccionEnvio() {
     }
 
-    public DireccionEnvio(String numero, String calle, String ciudad) {
+    public DireccionEnvio(String ciudad, String calle, String numero) {
         this.numero = numero;
         this.calle = calle;
         this.ciudad = ciudad;

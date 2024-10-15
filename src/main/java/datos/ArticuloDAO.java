@@ -1,9 +1,7 @@
 package datos;
 
 import static datos.Conexion.getConnection;
-import domain.Articulo;
-import domain.Cliente;
-import domain.DireccionEnvio;
+import domain.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,6 +26,7 @@ public class ArticuloDAO {
     private static final String SQL_DELETE ="DELETE FROM articulo WHERE idArticulo = ?";
     private static final String SQL_GET ="SELECT * FROM articulo WHERE idArticulo = ?";
     private static final String SQL_GET_BY_DESC ="SELECT * FROM articulo WHERE descripcion = ?";
+    private static final String SQL_GET_ARTS_IN_PED = "SELECT articulo.* FROM articulo, pedido WHERE pedido.idPedido = ?";
 
     
     public List<Articulo> seleccionar() throws SQLException{
@@ -44,7 +43,7 @@ public class ArticuloDAO {
             while(rs.next()){
                 int idArticulo = rs.getInt("idArticulo");
                 String descripcion = rs.getString("descripcion");
-                articulo = new Articulo("Alfombrilla para el baño"/*,articulos*/);
+                articulo = new Articulo(idArticulo,descripcion);
                 articulos.add(articulo);
             }
         } catch (SQLException ex) {
@@ -152,6 +151,36 @@ public class ArticuloDAO {
             }
         }
         return nuevoArticulo;
+    }
+    
+    public List<Articulo> obtenerDeUnPedido(Pedido pedido) throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Articulo articulo = null;
+        List<Articulo> articulos = new ArrayList<>();
+        
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(SQL_GET_ARTS_IN_PED);
+            stmt.setInt(1,pedido.getId_pedido());
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                int idArticulo = rs.getInt("idArticulo");
+                String descripcion = rs.getString("descripcion");
+                articulo = new Articulo(idArticulo,descripcion);
+                articulos.add(articulo);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+        
+        finally{
+            Conexion.close(conn);
+            Conexion.close(rs);
+            Conexion.close(stmt);
+        }
+        return articulos;
     }
     
     public Articulo obtenerPorDesc(String desc) throws SQLException{
