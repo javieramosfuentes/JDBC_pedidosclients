@@ -1,0 +1,29 @@
+-------------------------------------------------------------------------------
+Test set: datos.ArticuloFabricaDAOTest
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 4, Errors: 0, Skipped: 0, Time elapsed: 0.157 sec <<< FAILURE!
+datos.ArticuloFabricaDAOTest.testSeleccionar()  Time elapsed: 0.146 sec  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <null> but was: <[domain.ArticuloFabrica@4e41089d, domain.ArticuloFabrica@32a068d1]>
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:55)
+	at org.junit.jupiter.api.AssertionUtils.failNotEqual(AssertionUtils.java:62)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1124)
+	at datos.ArticuloFabricaDAOTest.testSeleccionar(ArticuloFabricaDAOTest.java:50)
+
+datos.ArticuloFabricaDAOTest.testInsertar()  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at datos.ArticuloFabricaDAO.insertar(ArticuloFabricaDAO.java:66)
+	at datos.ArticuloFabricaDAOTest.testInsertar(ArticuloFabricaDAOTest.java:64)
+
+datos.ArticuloFabricaDAOTest.testActualizar()  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at datos.ArticuloFabricaDAO.actualizar(ArticuloFabricaDAO.java:99)
+	at datos.ArticuloFabricaDAOTest.testActualizar(ArticuloFabricaDAOTest.java:79)
+
+datos.ArticuloFabricaDAOTest.testEliminar()  Time elapsed: 0.005 sec  <<< FAILURE!
+org.opentest4j.AssertionFailedError: The test case is a prototype.
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:39)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:109)
+	at datos.ArticuloFabricaDAOTest.testEliminar(ArticuloFabricaDAOTest.java:121)
+

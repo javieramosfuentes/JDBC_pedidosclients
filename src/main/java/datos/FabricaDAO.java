@@ -44,7 +44,7 @@ public class FabricaDAO {
                 int idFabrica = rs.getInt("idFabrica");
                 String telefono = rs.getString("telefono");
                 int articulosProvistos = rs.getInt("articulosProvistos");
-                fabrica = new Fabrica(idFabrica, telefono);
+                fabrica = new Fabrica(idFabrica, telefono,articulosProvistos);
                 fabricas.add(fabrica);
             }
         } catch (SQLException ex) {

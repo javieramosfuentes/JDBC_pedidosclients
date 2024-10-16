@@ -44,7 +44,7 @@ public class DireccionClienteDAO {
                 String calle = rs.getString("calle");
                 String ciudad = rs.getString("ciudad");
                 String comuna = rs.getString("comuna");
-                direccion = new DireccionEnvio(idDireccion,numero,calle,comuna,ciudad);
+                direccion = new DireccionEnvio(idDireccion,ciudad,calle,comuna,numero);
                 direcciones.add(direccion);
             }
         } catch (SQLException ex) {

@@ -18,7 +18,7 @@ public class Pedido {
     
     //private int articulos;
 
-    public Pedido(int id_pedido, Date fecha, int direccionEnvio, int idCliente/*, int articulos*/) {
+    public Pedido(int id_pedido, Date fecha, int direccionEnvio, int idCliente) {
         this.idPedido = id_pedido;
         this.fecha = fecha;
         this.direccionEnvio = direccionEnvio;
@@ -26,7 +26,11 @@ public class Pedido {
         //this.articulos = articulos;
     }
     
-    public Pedido(int id_pedido, java.sql.Date fecha, int direccionEnvio, int idCliente/*, int articulos*/) {
+        public Pedido(int id_pedido) {
+        this.idPedido = id_pedido;
+    }
+    
+    public Pedido(int id_pedido, java.sql.Date fecha, int direccionEnvio, int idCliente) {
         this.idPedido = id_pedido;
         this.fecha = fecha;
         this.direccionEnvio = direccionEnvio;

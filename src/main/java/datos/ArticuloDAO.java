@@ -26,7 +26,8 @@ public class ArticuloDAO {
     private static final String SQL_DELETE ="DELETE FROM articulo WHERE idArticulo = ?";
     private static final String SQL_GET ="SELECT * FROM articulo WHERE idArticulo = ?";
     private static final String SQL_GET_BY_DESC ="SELECT * FROM articulo WHERE descripcion = ?";
-    private static final String SQL_GET_ARTS_IN_PED = "SELECT articulo.* FROM articulo, pedido WHERE pedido.idPedido = ?";
+    private static final String SQL_GET_ARTS_IN_PED = "SELECT DISTINCT articulo.* FROM articulo, articulopedido,pedido WHERE articulo.idArticulo = articulopedido.idArticulo && articulopedido.idPedido = ?";
+    private static final String SQL_GET_ARTS_IN_FAB = "SELECT DISTINCT articulo.* FROM articulo, articulofabrica,fabrica WHERE articulo.idArticulo = articulofabrica.idArticulo && articulofabrica.idFabrica = ?";
 
     
     public List<Articulo> seleccionar() throws SQLException{

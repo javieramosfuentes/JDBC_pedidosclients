@@ -24,6 +24,7 @@ public class PedidoDAO {
     private static final String SQL_INSERT ="INSERT INTO pedido (idDireccion,fecha,idCliente) VALUES (?,?,?)";
     private static final String SQL_UPDATE ="UPDATE pedido SET idDireccion = ?, fecha = ?,idCliente = ? WHERE idPedido = ?; ";
     private static final String SQL_GET ="SELECT * FROM pedido WHERE idDireccion = ? && fecha = ? && idCliente = ?";
+    private static final String SQL_GET_BY_ID ="SELECT * FROM pedido WHERE idPedido = ?";
     private static final String SQL_DELETE ="DELETE FROM pedido WHERE idPedido = ?";
 
     
@@ -134,6 +135,44 @@ public class PedidoDAO {
             stmt.setInt(1,pedido.getDireccionEnvio());
             stmt.setDate(2,fechaSql);
             stmt.setInt(3,pedido.getIdCliente());
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                int id_pedido = rs.getInt("idPedido");
+                Date fecha = rs.getDate("fecha");
+                int dirEnvio = rs.getInt("idDireccion");
+                int cliente = rs.getInt("idCliente");
+                Pedido ped = new Pedido(id_pedido,fecha,dirEnvio,cliente);
+                pedidoNuevo = ped;
+            }
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+        
+        finally{
+            try {
+                Conexion.close(stmt);
+            } catch (SQLException ex) {
+            }
+            try {
+                Conexion.close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return pedidoNuevo;
+    }
+    
+    public Pedido obtenerPoId(int id) throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        Pedido pedidoNuevo = new Pedido();
+        ResultSet rs = null;
+        int registros = 0;
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.prepareStatement(SQL_GET_BY_ID);
+            stmt.setInt(1,id);
             rs = stmt.executeQuery();
             while(rs.next()){
                 int id_pedido = rs.getInt("idPedido");
