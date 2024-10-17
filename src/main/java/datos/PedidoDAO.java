@@ -26,6 +26,7 @@ public class PedidoDAO {
     private static final String SQL_GET ="SELECT * FROM pedido WHERE idDireccion = ? && fecha = ? && idCliente = ?";
     private static final String SQL_GET_BY_ID ="SELECT * FROM pedido WHERE idPedido = ?";
     private static final String SQL_DELETE ="DELETE FROM pedido WHERE idPedido = ?";
+    private static final String SQL_CHECK_EXISTENCE = "SELECT COUNT(*) FROM pedido WHERE idPedido = ?";
 
     
     public List<Pedido> seleccionar() throws SQLException{
@@ -231,5 +232,44 @@ public class PedidoDAO {
         }
         return false;
     }
+    
+    public boolean comprobarExistencia(int idPedido) {
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    boolean existe = false;
+
+    try {
+        conn = Conexion.getConnection();
+        
+        stmt = conn.prepareStatement(SQL_CHECK_EXISTENCE);
+        stmt.setInt(1, idPedido);
+        rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            int count = rs.getInt(1);
+            existe = (count > 0);
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace(System.out);
+    } finally {
+        try {
+            Conexion.close(rs);
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+        try {
+            Conexion.close(stmt);
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+        try {
+            Conexion.close(conn);
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+    return existe;
+}
 
 }

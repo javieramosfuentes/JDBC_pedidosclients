@@ -48,28 +48,23 @@ public class ClienteDAOTest {
      */
     @Test
     public void testListarPedidosConDescuentos() {
-        int idCliente = 1; // assuming a valid client ID
+        int idCliente = 1; 
         ClienteDAO clienteDAO = new ClienteDAO();
-        LocalDate fecha1 = LocalDate.parse("2024-10-10");
-        java.sql.Date sqlFecha1 = java.sql.Date.valueOf(fecha1);
-        
-        LocalDate fecha2 = LocalDate.parse("2024-10-14");
-        java.sql.Date sqlFecha2 = java.sql.Date.valueOf(fecha2);
-        
-        LocalDate fecha3 = LocalDate.parse("2024-10-16");
-        java.sql.Date sqlFecha3 = java.sql.Date.valueOf(fecha3);
-        System.out.println(fecha1);
-        List<Pedido> expResult = Arrays.asList(
-                new Pedido(4,sqlFecha1,0,1),
-                new Pedido(5,sqlFecha1,0,1),
-                new Pedido(6,sqlFecha1,1,1),
-                new Pedido(7,sqlFecha2,1,1),
-                new Pedido(8,sqlFecha2,2,1),
-                new Pedido(12,sqlFecha2,1,1),
-                new Pedido(19,sqlFecha3,2,1)
-        );
+        int expResult = 2;
         List<Pedido> result = clienteDAO.listarPedidosConDescuentos(idCliente);
-        assertIterableEquals(result, result);
+        assertEquals(expResult, result.size());
+    }
+    
+        /**
+     * Test of listarPedidosConDescuentos method, of class ClienteDAO.
+     */
+    @Test
+    public void testListar0PedidosConDescuentos() {
+        int idCliente = 2; 
+        ClienteDAO clienteDAO = new ClienteDAO();
+        int expResult = 0;
+        List<Pedido> result = clienteDAO.listarPedidosConDescuentos(idCliente);
+        assertEquals(expResult, result.size());
     }
     
 }

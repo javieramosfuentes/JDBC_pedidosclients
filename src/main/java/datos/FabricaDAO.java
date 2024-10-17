@@ -27,7 +27,7 @@ public class FabricaDAO {
     
     //Borra aquella fábrica la cual cualquier articulo suyo no esté en ningún pedido
     private static final String SQL_DELETE_WITHOUT_PEDIDOS ="DELETE FROM fabrica WHERE idFabrica NOT IN (SELECT DISTINCT af.idFabrica FROM articulofabrica af JOIN articulopedido ap ON af.idArticulo = ap.idArticulo)";
-
+    private static final String SQL_CHECK_EXISTENCE = "SELECT COUNT(*) FROM fabrica WHERE idFabrica = ?";
     
     public List<Fabrica> seleccionar() throws SQLException{
         Connection conn = null;
@@ -177,5 +177,44 @@ public class FabricaDAO {
             }
         }
         return false;
+    }
+    
+        public boolean comprobarExistencia(int idFabrica) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        boolean existe = false;
+
+        try {
+            conn = Conexion.getConnection();
+
+            stmt = conn.prepareStatement(SQL_CHECK_EXISTENCE);
+            stmt.setInt(1, idFabrica);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                existe = (count > 0);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                Conexion.close(rs);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            try {
+                Conexion.close(stmt);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            try {
+                Conexion.close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return existe;
     }
 }

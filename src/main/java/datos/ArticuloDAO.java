@@ -28,6 +28,7 @@ public class ArticuloDAO {
     private static final String SQL_GET_BY_DESC ="SELECT * FROM articulo WHERE descripcion = ?";
     private static final String SQL_GET_ARTS_IN_PED = "SELECT DISTINCT articulo.* FROM articulo, articulopedido,pedido WHERE articulo.idArticulo = articulopedido.idArticulo && articulopedido.idPedido = ?";
     private static final String SQL_GET_ARTS_IN_FAB = "SELECT DISTINCT articulo.* FROM articulo, articulofabrica,fabrica WHERE articulo.idArticulo = articulofabrica.idArticulo && articulofabrica.idFabrica = ?";
+    private static final String SQL_CHECK_EXISTENCE = "SELECT COUNT(*) FROM articulo WHERE idArticulo = ?";
 
     
     public List<Articulo> seleccionar() throws SQLException{
@@ -249,5 +250,44 @@ public class ArticuloDAO {
             }
         }
         return false;
+    }
+    
+    public boolean comprobarExistencia(int idCliente) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        boolean existe = false;
+
+        try {
+            conn = Conexion.getConnection();
+
+            stmt = conn.prepareStatement(SQL_CHECK_EXISTENCE);
+            stmt.setInt(1, idCliente);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                existe = (count > 0);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                Conexion.close(rs);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            try {
+                Conexion.close(stmt);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            try {
+                Conexion.close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return existe;
     }
 }

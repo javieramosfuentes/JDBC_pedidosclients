@@ -19,8 +19,11 @@ public class ClienteDAO {
     private static final String SQL_INSERT ="INSERT INTO cliente (saldo,limiteCredito,descuento,idDireccion) VALUES (?,?,?,?)";
     private static final String SQL_UPDATE ="UPDATE cliente SET saldo = ?, limiteCredito = ?, descuento = ?, idDireccion = ? WHERE idCliente = ?; ";
     private static final String SQL_DELETE ="DELETE FROM cliente WHERE idCliente = ?";
+    private static final String SQL_DELETE_PEDIDOS ="DELETE FROM pedido WHERE idCliente = ?";
     private static final String SQL_GET ="SELECT * FROM cliente WHERE idCliente = ?";
     private static final String SQL_GET_PED_WITH_DISCOUNT ="SELECT p.*, c.descuento FROM pedido p JOIN cliente c ON p.idCliente = c.idCliente WHERE p.idCliente = ?";
+    private static final String SQL_CHECK_EXISTENCE = "SELECT COUNT(*) FROM cliente WHERE idCliente = ?";
+    
 
     
     public List<Cliente> seleccionar() throws SQLException{
@@ -149,9 +152,40 @@ public class ClienteDAO {
         }
         return false;
     }
+    
+    public boolean eliminarPedidos(int id) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        int registros = 0;
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.prepareStatement(SQL_DELETE_PEDIDOS);
+            stmt.setInt(1,id);
+            registros = stmt.executeUpdate();
+            System.out.println("-- Eliminado correctamente --");
+            return true;
+            
+        } catch (SQLException ex) {
+            System.out.println("Se ha producido un error!");
+            ex.printStackTrace(System.out);
+        }
+        
+        finally{
+            try {
+                Conexion.close(stmt);
+            } catch (SQLException ex) {
+            }
+            try {
+                Conexion.close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return false;
+    }
   
     
-    public int obtener(int idCliente) throws SQLException{
+    public Cliente obtener(int idCliente) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
         Cliente cliente = new Cliente();
@@ -187,7 +221,7 @@ public class ClienteDAO {
                 ex.printStackTrace(System.out);
             }
         }
-        return registros;
+        return cliente;
     }
     
     public List<Pedido> listarPedidosConDescuentos(int idCliente) {
@@ -215,5 +249,44 @@ public class ClienteDAO {
             e.printStackTrace();
         }
         return pedidos;
+    }
+    
+    public boolean comprobarExistencia(int idCliente) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        boolean existe = false;
+
+        try {
+            conn = Conexion.getConnection();
+
+            stmt = conn.prepareStatement(SQL_CHECK_EXISTENCE);
+            stmt.setInt(1, idCliente);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                existe = (count > 0);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                Conexion.close(rs);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            try {
+                Conexion.close(stmt);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            try {
+                Conexion.close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return existe;
     }
 }

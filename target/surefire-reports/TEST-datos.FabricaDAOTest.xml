@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="2" failures="0" name="datos.ArticuloFabricaDAOTest" time="0.003" errors="0" skipped="0">
+<testsuite tests="2" failures="1" name="datos.FabricaDAOTest" time="0.007" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="11.0.24+8-post-Ubuntu-1ubuntu322.04"/>
@@ -62,6 +62,17 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="datos.ArticuloFabricaDAOTest" name="datos.ArticuloFabricaDAOTest.testCalcularCantidadArticulosPorAnyo0" time="0"/>
-  <testcase classname="datos.ArticuloFabricaDAOTest" name="datos.ArticuloFabricaDAOTest.testCalcularCantidadArticulosPorAnyo" time="0.003"/>
+  <testcase classname="datos.FabricaDAOTest" name="datos.FabricaDAOTest.testBorrarFabricasSinPedidos" time="0.007">
+    <failure message="expected: &lt;false&gt; but was: &lt;true&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: &lt;false&gt; but was: &lt;true&gt;
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:55)
+	at org.junit.jupiter.api.AssertionUtils.failNotEqual(AssertionUtils.java:62)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1124)
+	at datos.FabricaDAOTest.testBorrarFabricasSinPedidos(FabricaDAOTest.java:78)
+</failure>
+    <system-out>borrarFabricasSinPedidos
+</system-out>
+  </testcase>
+  <testcase classname="datos.FabricaDAOTest" name="datos.FabricaDAOTest.testBorrarFabricasSinPedidos_SuccesfulDeletion" time="0"/>
 </testsuite>

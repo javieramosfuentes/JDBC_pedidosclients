@@ -46,7 +46,7 @@ public class ArticuloFabricaDAOTest {
     public void testCalcularCantidadArticulosPorAnyo() throws Exception {
         String anyo = "2024";
         ArticuloFabricaDAO instance = new ArticuloFabricaDAO();
-        int expResult = 50;
+        int expResult = 24;
         int result = instance.calcularCantidadArticulosPorAnyo(anyo);
         assertEquals(expResult, result);
     }

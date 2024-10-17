@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="1" failures="0" name="datos.ClienteDAOTest" time="0.143" errors="0" skipped="0">
+<testsuite tests="2" failures="0" name="datos.ClienteDAOTest" time="0.142" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="11.0.24+8-post-Ubuntu-1ubuntu322.04"/>
@@ -13,7 +13,7 @@
     <property name="sun.os.patch.level" value="unknown"/>
     <property name="user.country" value="ES"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
-    <property name="test" value="datos.ClienteDAOTest"/>
+    <property name="test" value="datos.ArticuloFabricaDAOTest,datos.ClienteDAOTest,datos.FabricaDAOTest"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="user.dir" value="/home/javramfue/NetBeansProjects/JDBC_pedidosclients"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
@@ -45,7 +45,7 @@
     <property name="java.class.path" value="/usr/local/netbeans-14/netbeans/java/maven/boot/plexus-classworlds-2.6.0.jar"/>
     <property name="java.vm.specification.version" value="11"/>
     <property name="sun.arch.data.model" value="64"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -Dtest=datos.ClienteDAOTest -Dmaven.ext.class.path=/usr/local/netbeans-14/netbeans/java/maven-nblib/netbeans-eventspy.jar surefire:test"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -Dtest=datos.ArticuloFabricaDAOTest,datos.ClienteDAOTest,datos.FabricaDAOTest -Dmaven.ext.class.path=/usr/local/netbeans-14/netbeans/java/maven-nblib/netbeans-eventspy.jar surefire:test"/>
     <property name="java.home" value="/usr/lib/jvm/java-11-openjdk-amd64"/>
     <property name="user.language" value="ca"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
@@ -62,5 +62,6 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="datos.ClienteDAOTest" name="datos.ClienteDAOTest.testListarPedidosConDescuentos" time="0.143"/>
+  <testcase classname="datos.ClienteDAOTest" name="datos.ClienteDAOTest.testListar0PedidosConDescuentos" time="0.14"/>
+  <testcase classname="datos.ClienteDAOTest" name="datos.ClienteDAOTest.testListarPedidosConDescuentos" time="0.002"/>
 </testsuite>

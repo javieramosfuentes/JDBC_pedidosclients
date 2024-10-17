@@ -23,6 +23,8 @@ public class ArticuloFabricaDAO {
     private static final String SQL_UPDATE ="UPDATE articulofabrica SET precio = ?,existencias = ? WHERE idArticulo = ? && idFabrica = ?; ";
     private static final String SQL_DELETE ="DELETE FROM articulofabrica WHERE idArticulo = ? && idFabrica = ?";
     private static final String SQL_CALC_ART_X_ANYO ="SELECT SUM(ap.cantidad) AS total_articulos FROM articulopedido ap JOIN pedido p ON ap.idPedido = p.idPedido WHERE YEAR(p.fecha) = ?";
+    private static final String SQL_CHECK_EXISTENCE = "SELECT COUNT(*) FROM articulofabrica WHERE idArticulo = ? && idFabrica = ?";
+    
 
     
     public List<ArticuloFabrica> seleccionar() throws SQLException{
@@ -181,5 +183,45 @@ public class ArticuloFabricaDAO {
             }
         }
         return false;
+    }
+    
+    public boolean comprobarExistencia(int idArticulo,int idFabrica) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        boolean existe = false;
+
+        try {
+            conn = Conexion.getConnection();
+
+            stmt = conn.prepareStatement(SQL_CHECK_EXISTENCE);
+            stmt.setInt(1, idArticulo);
+            stmt.setInt(2, idFabrica);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                existe = (count > 0);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                Conexion.close(rs);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            try {
+                Conexion.close(stmt);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            try {
+                Conexion.close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return existe;
     }
 }

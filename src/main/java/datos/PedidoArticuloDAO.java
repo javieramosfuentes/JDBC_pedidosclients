@@ -23,6 +23,7 @@ public class PedidoArticuloDAO {
     private static final String SQL_UPDATE ="UPDATE articulopedido SET cantidad = ? WHERE idPedido = ? && idArticulo = ? ; ";
     private static final String SQL_DELETE ="DELETE FROM articulopedido WHERE idPedido = ? && idArticulo = ?";
     private static final String SQL_GET ="SELECT * FROM articulopedido WHERE idPedido = ? && idArticulo = ?";
+    private static final String SQL_CHECK_EXISTENCE = "SELECT COUNT(*) FROM articulopedido WHERE idArticulo = ? && idPedido = ?";
 
     
     public List<PedidoArticulo> seleccionar() throws SQLException{
@@ -146,5 +147,45 @@ public class PedidoArticuloDAO {
             }
         }
         return false;
+    }
+    
+    public boolean comprobarExistencia(int idArticulo,int idPedido) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        boolean existe = false;
+
+        try {
+            conn = Conexion.getConnection();
+
+            stmt = conn.prepareStatement(SQL_CHECK_EXISTENCE);
+            stmt.setInt(1, idArticulo);
+            stmt.setInt(2, idPedido);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                existe = (count > 0);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                Conexion.close(rs);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            try {
+                Conexion.close(stmt);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            try {
+                Conexion.close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return existe;
     }
 }
